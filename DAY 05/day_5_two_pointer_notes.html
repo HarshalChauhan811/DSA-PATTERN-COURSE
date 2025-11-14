@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>day_5_two_pointer_notes.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%F0%9F%9A%80-dsa-patterns-course-2025--day-5-two-pointer-pattern">🚀 DSA Patterns Course 2025 — Day 5 (Two Pointer Pattern)</h1>
+<h3 id="a1-level-notes--first-principles--full-hinglish--interview-perfect"><strong>A1-Level Notes — First Principles + Full Hinglish + Interview-Perfect</strong></h3>
+<hr>
+<h1 id="%E2%9C%A8-ye-notes-kyu-special-hain">✨ Ye Notes Kyu Special Hain?</h1>
+<p>Ye notes <strong>First Principles Thinking</strong> se banaye gaye hain — matlab:</p>
+<ul>
+<li>Har problem ko bilkul <strong>scratch se</strong> samjhaya gaya hai.</li>
+<li>Har line <strong>kyu likhi ja rahi hai</strong>, uska reason diya hua hai.</li>
+<li>Intuition is level ki hai ki <strong>beginner bhi padhe to samajh jaye</strong>, aur</li>
+<li>Interviewer ko explain karne layak clarity bhi ho.</li>
+</ul>
+<h1 id="%F0%9F%A5%87-problem-1-strobogrammatic-number-lc-256-%E2%80%93-easy">🥇 Problem 1: Strobogrammatic Number (LC 256 – Easy)</h1>
+<h2 id="%F0%9F%A7%A0-first-principle-intuition">🧠 First-Principle Intuition</h2>
+<h3 id="%E2%9D%93-problem-kya-bol-raha-hai">❓ Problem kya bol raha hai?</h3>
+<p>Agar tum ek number ko <strong>180° rotate</strong> karo aur woh phir bhi <strong>same</strong> dikhe to woh strobogrammatic number hota hai.</p>
+<h3 id="%E2%9D%93-kaunse-digits-rotate-hoke-valid-bante-hain">❓ Kaunse digits rotate hoke valid bante hain?</h3>
+<ul>
+<li>0 → 0 (same hi dikhta hai)</li>
+<li>1 → 1</li>
+<li>8 → 8</li>
+<li>6 → 9 (flip hota hai)</li>
+<li>9 → 6 (flip hota hai)</li>
+</ul>
+<h3 id="%E2%9D%8C-invalid-digits-23457">❌ Invalid digits: 2,3,4,5,7</h3>
+<p>Rotate hone par koi valid form nahi banate.</p>
+<h3 id="%E2%9D%93-logic-simple-kya-hai">❓ Logic simple kya hai?</h3>
+<p>Ye <strong>palindrome check</strong> jaisa hi hai, bas simple same-same compare nahi karte.<br>
+Left wale digit ko <strong>rotate</strong> karke right wale digit se match karna hota hai.</p>
+<h3 id="%E2%9D%93-two-pointer-kyu">❓ Two Pointer kyu?</h3>
+<p>Kyuki hum beginning aur end se characters check kar rahe hain.</p>
+<hr>
+<h2 id="%F0%9F%A7%AA-dry-run-simple-example">🧪 Dry Run (Simple Example)</h2>
+<p>Input → &quot;619&quot;</p>
+<ul>
+<li>6 rotate → 9 = matches right</li>
+<li>1 rotate → 1 = matches
+→ Output: <strong>true</strong></li>
+</ul>
+<hr>
+<h2 id="%E2%9C%85-c-code-comments">✅ C++ Code (Comments)</h2>
+<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> {</span>
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">isStrobogrammatic</span><span class="hljs-params">(<span class="hljs-built_in">string</span> num)</span> </span>{
+        <span class="hljs-comment">// Ye map batata hai ki kaunsa digit rotate hoke kya banega</span>
+        <span class="hljs-built_in">unordered_map</span>&lt;<span class="hljs-keyword">char</span>,<span class="hljs-keyword">char</span>&gt; rot = {
+            {<span class="hljs-string">'0'</span>,<span class="hljs-string">'0'</span>}, {<span class="hljs-string">'1'</span>,<span class="hljs-string">'1'</span>}, {<span class="hljs-string">'8'</span>,<span class="hljs-string">'8'</span>},
+            {<span class="hljs-string">'6'</span>,<span class="hljs-string">'9'</span>}, {<span class="hljs-string">'9'</span>,<span class="hljs-string">'6'</span>}
+        };
+
+        <span class="hljs-keyword">int</span> l = <span class="hljs-number">0</span>, r = num.size() - <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">while</span> (l &lt;= r) {
+            <span class="hljs-keyword">char</span> L = num[l], R = num[r];
+
+            <span class="hljs-comment">// Agar left wala digit rotate hi nahi ho sakta → invalid number</span>
+            <span class="hljs-keyword">if</span> (!rot.count(L)) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+
+            <span class="hljs-comment">// Rotate hone ke baad left ka digit right se match hona chahiye</span>
+            <span class="hljs-keyword">if</span> (rot[L] != R) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+
+            l++;
+            r--;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+};
+</div></code></pre>
+<hr>
+<h2 id="%F0%9F%94%8D-complexity-explanation">🔍 Complexity (Explanation)</h2>
+<h3 id="time-%E2%86%92-on"><strong>Time → O(n)</strong></h3>
+<ul>
+<li>Two pointers ek hi baar puri string traverse karte hain.</li>
+<li>Har step me constant kaam hota hai.</li>
+</ul>
+<h3 id="space-%E2%86%92-o1"><strong>Space → O(1)</strong></h3>
+<ul>
+<li>Map fixed size ka hai (5 entries).</li>
+<li>Extra memory nahi lagti.</li>
+</ul>
+<hr>
+<h1 id="%F0%9F%A5%88-problem-2-append-characters-to-make-subsequence-lc-2486-%E2%80%93-medium">🥈 Problem 2: Append Characters to Make Subsequence (LC 2486 – Medium)</h1>
+<h2 id="%F0%9F%A7%A0-first-principle-intuition">🧠 First-Principle Intuition</h2>
+<h3 id="%E2%9D%93-problem-kya-keh-raha">❓ Problem kya keh raha?</h3>
+<p><code>t</code> ko <code>s</code> ka <strong>subsequence</strong> banana hai.<br>
+Agar kuch part match nahi hota, woh end me <strong>append</strong> karna padega.</p>
+<h3 id="%E2%9D%93-matching-kaise-hoga">❓ Matching kaise hoga?</h3>
+<ul>
+<li><code>i</code> → <code>s</code> ke andar move karega</li>
+<li><code>j</code> → <code>t</code> ke andar</li>
+<li>Jab match mile → dono pointers aage</li>
+<li>Jab match na mile → sirf <code>i</code> aage</li>
+</ul>
+<p><code>t</code> ka jo part match na ho → wahi append karoge.</p>
+<hr>
+<h2 id="%F0%9F%A7%AA-dry-run">🧪 Dry Run</h2>
+<p>s = &quot;coaching&quot;<br>
+t = &quot;coding&quot;</p>
+<p><code>t</code> me se sirf &quot;co&quot; match hota hai.<br>
+Remaining → &quot;ding&quot; → length = <strong>4</strong>.</p>
+<hr>
+<h2 id="%E2%9C%85-c-code-comments">✅ C++ Code (Comments)</h2>
+<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> {</span>
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">appendCharacters</span><span class="hljs-params">(<span class="hljs-built_in">string</span> s, <span class="hljs-built_in">string</span> t)</span> </span>{
+        <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>, j = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">int</span> n = s.size(), m = t.size();
+
+        <span class="hljs-keyword">while</span> (i &lt; n &amp;&amp; j &lt; m) {
+            <span class="hljs-comment">// Match mil gaya → t ka next char dhundho</span>
+            <span class="hljs-keyword">if</span> (s[i] == t[j]) j++;
+
+            <span class="hljs-comment">// s to hamesha aage badhega</span>
+            i++;
+        }
+
+        <span class="hljs-comment">// t ka kitna part match nahi hua → wahi append hoga</span>
+        <span class="hljs-keyword">return</span> m - j;
+    }
+};
+</div></code></pre>
+<hr>
+<h2 id="%F0%9F%94%8D-complexity">🔍 Complexity</h2>
+<h3 id="time-%E2%86%92-on--m"><strong>Time → O(n + m)</strong></h3>
+<ul>
+<li><code>s</code> poora ek baar scan hota hai → O(n)</li>
+<li><code>t</code> ka pointer sirf match hone par aage badhta hai → max O(m)</li>
+</ul>
+<h3 id="space-%E2%86%92-o1"><strong>Space → O(1)</strong></h3>
+<ul>
+<li>Bas do pointers use ho rahe hain.</li>
+</ul>
+<hr>
+<h1 id="%F0%9F%A5%89-problem-3-lowest-common-ancestor-iii-lc-1650-%E2%80%93-medium">🥉 Problem 3: Lowest Common Ancestor III (LC 1650 – Medium)</h1>
+<h2 id="%F0%9F%A7%A0-first-principles-intuition">🧠 First-Principles Intuition</h2>
+<h3 id="%E2%9D%93-yeh-problem-special-kaise-hai">❓ Yeh problem special kaise hai?</h3>
+<p>Har node ke paas <strong>parent pointer</strong> diya hua hai.<br>
+Matlab koi bhi node se root tak ja sakte ho:</p>
+<pre class="hljs"><code><div>node → parent → parent → ... → root
+</div></code></pre>
+<p>Yeh ek <strong>linked list</strong> jaisa lagta hai.</p>
+<h3 id="%E2%9D%93-p-aur-q-ka-lca-kaise-milega">❓ P aur Q ka LCA kaise milega?</h3>
+<ul>
+<li>P se root tak ek path → linked list</li>
+<li>Q se root tak ek path → linked list</li>
+</ul>
+<p>Dono paths ki <strong>length alag ho sakti hai</strong>.<br>
+Isko solve karne ka best logic:</p>
+<h3 id="%F0%9F%94%A5-two-pointer-reset-trick-linked-list-intersection-technique">🔥 Two-Pointer Reset Trick (Linked List Intersection Technique)</h3>
+<ul>
+<li>A = P se start</li>
+<li>B = Q se start</li>
+<li>Jab A root se upar (NULL) jaye → usko Q par le aao</li>
+<li>Jab B NULL jaye → usko P par le aao</li>
+</ul>
+<p>Dono <strong>equal distance</strong> travel karenge → same node par milenge → wahi LCA.</p>
+<hr>
+<h2 id="%F0%9F%A7%AA-dry-run">🧪 Dry Run</h2>
+<p>P = 7<br>
+Q = 4</p>
+<p>Paths:<br>
+P → 7 → 2 → 5 → 3<br>
+Q → 4 → 2 → 5 → 3</p>
+<p>Meet point = <strong>2</strong> = LCA.</p>
+<hr>
+<h2 id="%E2%9C%85-c-code">✅ C++ Code</h2>
+<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> {</span>
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function">Node* <span class="hljs-title">lowestCommonAncestor</span><span class="hljs-params">(Node* p, Node* q)</span> </span>{
+        Node* a = p;
+        Node* b = q;
+
+        <span class="hljs-comment">// Jab tak dono same node par nahi aa jate</span>
+        <span class="hljs-keyword">while</span> (a != b) {
+            <span class="hljs-comment">// Agar a upar tak pahuch gaya → Q se start kara do</span>
+            a = (a == <span class="hljs-literal">nullptr</span>) ? q : a-&gt;parent;
+
+            <span class="hljs-comment">// Agar b upar tak pahuch gaya → P se start kara do</span>
+            b = (b == <span class="hljs-literal">nullptr</span>) ? p : b-&gt;parent;
+        }
+
+        <span class="hljs-comment">// Jaha dono mil gaye → wahi LCA</span>
+        <span class="hljs-keyword">return</span> a;
+    }
+};
+</div></code></pre>
+<hr>
+<h2 id="%F0%9F%94%8D-complexity">🔍 Complexity</h2>
+<h3 id="time-%E2%86%92-ohp--hq"><strong>Time → O(h_p + h_q)</strong></h3>
+<ul>
+<li>P se root tak height = h_p</li>
+<li>Q se root tak height = h_q</li>
+<li>Dono pointers milkar at max h_p + h_q distance cover karenge</li>
+<li>Balanced tree: h ≈ logN</li>
+<li>Skew tree: worst-case O(N)</li>
+</ul>
+<h3 id="space-%E2%86%92-o1"><strong>Space → O(1)</strong></h3>
+<ul>
+<li>Sirf do pointers use ho rahe hain.</li>
+</ul>
+<hr>
+<h1 id="%F0%9F%93%8C-day-5-final-summary">📌 Day 5 Final Summary</h1>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Pattern</th>
+<th>Time</th>
+<th>Space</th>
+<th>Main Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strobogrammatic</td>
+<td>Two Pointer + Map</td>
+<td>O(n)</td>
+<td>O(1)</td>
+<td>Rotate(L) = R check</td>
+</tr>
+<tr>
+<td>Append Characters</td>
+<td>Greedy Two Pointer</td>
+<td>O(n+m)</td>
+<td>O(1)</td>
+<td>t ka jo part match na ho → append</td>
+</tr>
+<tr>
+<td>LCA III</td>
+<td>Two Pointer Reset</td>
+<td>O(h)</td>
+<td>O(1)</td>
+<td>Paths = linked lists, meet = LCA</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="%F0%9F%8E%AF-final-takeaway">🎯 Final Takeaway</h1>
+<p>Two Pointer sirf array/string ke liye nahi hota.<br>
+Tree + parent pointer problems me bhi <strong>super clean</strong> solution deta hai.<br>
+LCA III two-pointer trick → <strong>industry-level smart approach</strong> hai.</p>
+<hr>
+
+</body>
+</html>
