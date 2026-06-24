@@ -19,7 +19,7 @@ public:
         // ---- 0s fill kar rahe ----
         while(zero--){
             nums[index++] = 0;
-        }
+        } 
 
         // ---- 1s fill kar rahe ----
         while(one--){
